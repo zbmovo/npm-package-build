@@ -6,7 +6,6 @@ import terser from '@rollup/plugin-terser'
 
 import { joinProjectRoot } from './utils/paths'
 import type { OutputOptions, RollupOptions } from 'rollup'
-import type { Draft } from 'immer'
 
 type Output = (options?: OutputOptions) => OutputOptions
 
@@ -39,7 +38,7 @@ const umd: Output = options => {
 export interface UserConfig {
   inject: Record<string, any>
   clean: string[]
-  rollup: (config: Draft<RollupOptions>) => void
+  rollup: (config: RollupOptions) => void
 }
 
 export const presets = {

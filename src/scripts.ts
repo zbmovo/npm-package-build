@@ -5,13 +5,10 @@ import json from './plugins/json'
 import babel from './plugins/babel'
 import clean from './plugins/clean'
 
-import { produce } from 'immer'
 import { rollup } from 'rollup'
 import { presets } from './config'
 import { joinProjectRoot, getUserConfig } from './utils/paths'
 import type { OutputOptions, RollupOptions } from 'rollup'
-
-const noop = () => { }
 
 export async function build() {
   console.log(
@@ -23,7 +20,7 @@ export async function build() {
 
   const npmbuildrc = getUserConfig()
   const input = joinProjectRoot('src/index.ts')
-  const defaultConfig: RollupOptions = {
+  const config: RollupOptions = {
     input,
     output: [
       presets.output.commonjs(),
@@ -41,7 +38,10 @@ export async function build() {
     ],
   }
 
-  const config = produce(defaultConfig, npmbuildrc.rollup || noop)
+  if (typeof npmbuildrc.rollup === 'function') {
+    npmbuildrc.rollup(config)
+  }
+
   try {
     const startTime = performance.now()
     const rollupBuild = await rollup(config)
